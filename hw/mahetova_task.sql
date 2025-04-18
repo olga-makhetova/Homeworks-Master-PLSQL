@@ -4,37 +4,55 @@
 */
 
 -- Создание платежа
-BEGIN
-	dbms_output.put_line('Платеж создан. Статус: 0');
-END;
+declare
+  c_status_created constant number := 0;
+  v_msg varchar2(250) := 'Платеж создан. Статус: ' || c_status_created;
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
 
 -- Сброс платежа в "ошибочный статус" с указанием причины
-BEGIN
-	dbms_output.put_line('Сброс платежа в "ошибочный статус" с указанием причины. Статус: 2. Причина: недостаточно средств');
-END;
+declare
+  c_status_error constant number := 2;
+  v_reason varchar2(50) := 'недостаточно средств';
+  v_msg varchar2(250) := 'Сброс платежа в "ошибочный статус" с указанием причины. Статус: ' || c_status_error || '. Причина: ' || v_reason;
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
 
 -- Отмена платежа с указанием причины
-BEGIN
-	dbms_output.put_line('Отмена платежа с указанием причины. Статус: 3. Причина: ошибка пользователя');
-END;
+declare
+  c_status_canceled constant number := 3;
+  v_reason varchar2(50) := 'ошибка пользователя';
+  v_msg varchar2(250) := 'Отмена платежа с указанием причины. Статус: ' || c_status_canceled || '. Причина: ' || v_reason;
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
 
 -- Успешное завершение платежа
-BEGIN
-	dbms_output.put_line('Успешное завершение платежа. Статус: 1');
-END;
+declare
+  c_status_finished constant number := 1;
+  v_msg varchar2(250) := 'Успешное завершение платежа. Статус: ' || c_status_finished;
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
 
 -- Данные платежа добавлены или обновлены
-BEGIN
-	dbms_output.put_line('Данные платежа добавлены или обновлены по списку id_поля/значение');
-END;
+declare
+  v_msg varchar2(250) := 'Данные платежа добавлены или обновлены по списку id_поля/значение';
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
 
 -- Детали платежа удалены
-BEGIN
-	dbms_output.put_line('Детали платежа удалены по списку id_полей');
-END;
+declare
+  v_msg varchar2(250) := 'Детали платежа удалены по списку id_полей';
+begin
+	dbms_output.put_line(v_msg);
+end;
 /
