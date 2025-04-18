@@ -6,8 +6,9 @@
 -- Создание платежа
 declare
   c_status_created constant number := 0;
+  v_msg varchar2(250) := 'Платеж создан. Статус: ' || c_status_created;
 begin
-	dbms_output.put_line('Платеж создан. Статус: ' || c_status_created);
+	dbms_output.put_line(v_msg);
 end;
 /
 
