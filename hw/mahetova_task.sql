@@ -10,7 +10,7 @@ declare
 begin
 	dbms_output.put_line(v_msg);
 end;
-
+/
 
 -- Сброс платежа в "ошибочный статус" с указанием причины
 declare
@@ -20,7 +20,7 @@ declare
 begin
 	dbms_output.put_line(v_msg);
 end;
-
+/
 
 -- Отмена платежа с указанием причины
 declare
