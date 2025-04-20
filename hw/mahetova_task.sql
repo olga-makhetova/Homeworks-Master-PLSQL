@@ -5,8 +5,8 @@
 
 -- Создание платежа
 declare
-  c_status_created constant number(10, 0) := 0;
-  v_payment_id number(38, 0) := 0;
+  c_status_created constant payment.status%type := 0;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_msg varchar2(250 char) := 'Платеж создан. Статус: ' || c_status_created;
 begin
@@ -19,8 +19,8 @@ end;
 
 -- Сброс платежа в "ошибочный статус" с указанием причины
 declare
-  c_status_error constant number(10, 0) := 2;
-  v_payment_id number(38, 0) := 0;
+  c_status_error constant payment.status%type := 2;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_reason varchar2(50) := 'недостаточно средств';
   v_msg varchar2(250 char) := 'Сброс платежа в "ошибочный статус" с указанием причины. Статус: ' || c_status_error || '. Причина: ' || v_reason;
@@ -41,8 +41,8 @@ end;
 
 -- Отмена платежа с указанием причины
 declare
-  c_status_canceled constant number(10, 0) := 3;
-  v_payment_id number(38, 0) := 0;
+  c_status_canceled constant payment.status%type := 3;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_reason varchar2(50) := 'ошибка пользователя';
   v_msg varchar2(250 char) := 'Отмена платежа с указанием причины. Статус: ' || c_status_canceled || '. Причина: ' || v_reason;
@@ -63,8 +63,8 @@ end;
 
 -- Успешное завершение платежа
 declare
-  c_status_finished constant number(10, 0) := 1;
-  v_payment_id number(38, 0) := 0;
+  c_status_finished constant payment.status%type := 1;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_msg varchar2(250 char) := 'Успешное завершение платежа. Статус: ' || c_status_finished;
 begin
@@ -80,7 +80,7 @@ end;
 
 -- Данные платежа добавлены или обновлены
 declare
-  v_payment_id number(38, 0) := 0;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_msg varchar2(250 char) := 'Данные платежа добавлены или обновлены по списку id_поля/значение';
 begin
@@ -96,7 +96,7 @@ end;
 
 -- Детали платежа удалены
 declare
-  v_payment_id number(38, 0) := 0;
+  v_payment_id payment.payment_id%type := 0;
   v_date date := sysdate;
   v_msg varchar2(250 char) := 'Детали платежа удалены по списку id_полей';
 begin
