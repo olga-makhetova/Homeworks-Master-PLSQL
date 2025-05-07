@@ -21,12 +21,6 @@ declare
 begin
   dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd mon year'));
   
-  -- добавление платежа
-  insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id)
-    values(payment_seq.nextval, sysdate, v_summa, v_currency_id, v_from_client_id, v_to_client_id)
-    returning payment_id into v_payment_id;
-  
-  -- добавление деталей платежа из коллекции
   if v_payment_data is not empty then
     for i in v_payment_data.first..v_payment_data.last loop
       if v_payment_data(i).field_type is null then
@@ -41,6 +35,12 @@ begin
     dbms_output.put_line('Коллекция не содержит данных');
   end if;
   
+  -- добавление платежа
+  insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id)
+    values(payment_seq.nextval, systimestamp, v_summa, v_currency_id, v_from_client_id, v_to_client_id)
+    returning payment_id into v_payment_id;
+  
+  -- добавление деталей платежа из коллекции
   insert into payment_detail(payment_id, field_id, field_value)
     select v_payment_id, value(t).field_type, value(t).field_value from table(v_payment_data) t; 
   
