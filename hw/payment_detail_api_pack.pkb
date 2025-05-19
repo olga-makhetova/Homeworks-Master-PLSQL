@@ -1,13 +1,13 @@
 create or replace package body payment_detail_api_pack
 as
-  -- Данные платежа добавлены или обновлены
+  -- Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹
   procedure insert_or_update_payment_detail(p_payment_id   payment.payment_id%type,
                                             p_payment_data t_payment_detail_array)
   is
     v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Данные платежа добавлены или обновлены по списку id_поля/значение';
+    v_msg varchar2(250 char) := 'Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹ РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»СЏ/Р·РЅР°С‡РµРЅРёРµ';
   begin
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yyyy hh:mi AM'));
+    dbms_output.put_line('РўРµРєСѓС‰Р°СЏ РґР°С‚Р°: ' || to_char(v_date, 'dd.mm.yyyy hh:mi AM'));
     dbms_output.put_line(v_msg);
 
     dbms_output.put_line('p_payment_id = ' || p_payment_id);
@@ -38,14 +38,14 @@ as
   end insert_or_update_payment_detail;
   
 
-  -- Детали платежа удалены
+  -- Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹
   procedure delete_payment_detail(p_payment_id         payment.payment_id%type,
                                   p_payment_delete_ids t_number_array)
   is
     v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Детали платежа удалены по списку id_полей';
+    v_msg varchar2(250 char) := 'Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹ РїРѕ СЃРїРёСЃРєСѓ id_РїРѕР»РµР№';
   begin
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'DDD') || '''s day of year');
+    dbms_output.put_line('РўРµРєСѓС‰Р°СЏ РґР°С‚Р°: ' || to_char(v_date, 'DDD') || '''s day of year');
     dbms_output.put_line(v_msg);
 
     dbms_output.put_line('p_payment_id = ' || p_payment_id);
@@ -56,7 +56,7 @@ as
     if p_payment_delete_ids is empty then
       dbms_output.put_line(payment_api_pack.c_err_msg_empty_collection);
     end if;
-    dbms_output.put_line('Количество полей для удаления = ' || p_payment_delete_ids.count());
+    dbms_output.put_line('РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ = ' || p_payment_delete_ids.count());
     
     forall i in p_payment_delete_ids.first..p_payment_delete_ids.last
       delete from payment_detail 

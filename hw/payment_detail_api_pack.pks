@@ -1,15 +1,15 @@
 /*
-  Автор: Махетова Ольга
-  Описание пакета: API для сущности “Детали платежа”
+  РђРІС‚РѕСЂ: РњР°С…РµС‚РѕРІР° РћР»СЊРіР°
+  РћРїРёСЃР°РЅРёРµ РїР°РєРµС‚Р°: API РґР»СЏ СЃСѓС‰РЅРѕСЃС‚Рё вЂњР”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р°вЂќ
 */
 
 create or replace package payment_detail_api_pack
 as
-  -- Данные платежа добавлены или обновлены
+  -- Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹
   procedure insert_or_update_payment_detail(p_payment_id   payment.payment_id%type,
                                             p_payment_data t_payment_detail_array);                                            
 
-  -- Детали платежа удалены
+  -- Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹
   procedure delete_payment_detail(p_payment_id         payment.payment_id%type,
                                   p_payment_delete_ids t_number_array);                                  
 end payment_detail_api_pack;

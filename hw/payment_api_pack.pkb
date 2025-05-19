@@ -1,7 +1,7 @@
 create or replace package body payment_api_pack
 is
 
-  -- Создание платежа
+  -- РЎРѕР·РґР°РЅРёРµ РїР»Р°С‚РµР¶Р°
   function create_payment(p_payment_data   t_payment_detail_array,
                           p_summa          payment.summa%type,
                           p_currency_id    payment.currency_id%type,
@@ -11,9 +11,9 @@ is
                           ) return payment.payment_id%type 
   is
     v_payment_id payment.payment_id%type;
-    v_msg varchar2(250 char) := 'Платеж создан. Статус: ' || c_status_created;
+    v_msg varchar2(250 char) := 'РџР»Р°С‚РµР¶ СЃРѕР·РґР°РЅ. РЎС‚Р°С‚СѓСЃ: ' || c_status_created;
   begin
-    dbms_output.put_line('Дата платежа: ' || to_char(p_payment_date, 'dd mon year'));
+    dbms_output.put_line('Р”Р°С‚Р° РїР»Р°С‚РµР¶Р°: ' || to_char(p_payment_date, 'dd mon year'));
     
     if p_payment_data is not empty then
       for i in p_payment_data.first..p_payment_data.last loop
@@ -29,12 +29,12 @@ is
       dbms_output.put_line(c_err_msg_empty_collection);
     end if;
     
-    -- добавление платежа
+    -- РґРѕР±Р°РІР»РµРЅРёРµ РїР»Р°С‚РµР¶Р°
     insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id)
       values(payment_seq.nextval, p_payment_date, p_summa, p_currency_id, p_from_client_id, p_to_client_id)
       returning payment_id into v_payment_id;
     
-    -- добавление деталей платежа из коллекции
+    -- РґРѕР±Р°РІР»РµРЅРёРµ РґРµС‚Р°Р»РµР№ РїР»Р°С‚РµР¶Р° РёР· РєРѕР»Р»РµРєС†РёРё
     insert into payment_detail(payment_id, field_id, field_value)
       select v_payment_id, value(t).field_type, value(t).field_value from table(p_payment_data) t; 
     
@@ -44,15 +44,15 @@ is
     return v_payment_id;
   end create_payment;
 
-  -- Сброс платежа в "ошибочный статус" с указанием причины
+  -- РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
   procedure fail_payment(p_payment_id payment.payment_id%type,
                          p_reason     payment.status_change_reason%type
                          )
   is
     v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Сброс платежа в "ошибочный статус" с указанием причины. Статус: ' || c_status_error || '. Причина: ' || p_reason;
+    v_msg varchar2(250 char) := 'РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. РЎС‚Р°С‚СѓСЃ: ' || c_status_error || '. РџСЂРёС‡РёРЅР°: ' || p_reason;
   begin
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd FMmonth (dy)'));
+    dbms_output.put_line('РўРµРєСѓС‰Р°СЏ РґР°С‚Р°: ' || to_char(v_date, 'dd FMmonth (dy)'));
     dbms_output.put_line(v_msg);
 
     dbms_output.put_line('p_payment_id = ' || p_payment_id);
@@ -74,15 +74,15 @@ is
   end fail_payment;
 
 
-  -- Отмена платежа с указанием причины
+  -- РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
   procedure cancel_payment(p_payment_id payment.payment_id%type,
                            p_reason     payment.status_change_reason%type
                            )
   is
     v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Отмена платежа с указанием причины. Статус: ' || c_status_canceled || '. Причина: ' || p_reason;
+    v_msg varchar2(250 char) := 'РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹. РЎС‚Р°С‚СѓСЃ: ' || c_status_canceled || '. РџСЂРёС‡РёРЅР°: ' || p_reason;
   begin
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.FMRM.yyyy'));
+    dbms_output.put_line('РўРµРєСѓС‰Р°СЏ РґР°С‚Р°: ' || to_char(v_date, 'dd.FMRM.yyyy'));
     dbms_output.put_line(v_msg);
 
     if p_payment_id is null then
@@ -101,13 +101,13 @@ is
        and status = c_status_created; 
   end cancel_payment;
 
-  -- Успешное завершение платежа
+  -- РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°
   procedure successful_finish_payment(p_payment_id payment.payment_id%type)
   is
     v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Успешное завершение платежа. Статус: ' || c_status_finished;
+    v_msg varchar2(250 char) := 'РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°. РЎС‚Р°С‚СѓСЃ: ' || c_status_finished;
   begin
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yy hh24:mi:ss'));
+    dbms_output.put_line('РўРµРєСѓС‰Р°СЏ РґР°С‚Р°: ' || to_char(v_date, 'dd.mm.yy hh24:mi:ss'));
     dbms_output.put_line(v_msg);
 
     dbms_output.put_line('p_payment_id = ' || p_payment_id);

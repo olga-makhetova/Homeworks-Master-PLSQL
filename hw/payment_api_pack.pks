@@ -1,24 +1,24 @@
 /*
-  Автор: Махетова Ольга
-  Описание пакета: API для сущностей “Платеж”
+  РђРІС‚РѕСЂ: РњР°С…РµС‚РѕРІР° РћР»СЊРіР°
+  РћРїРёСЃР°РЅРёРµ РїР°РєРµС‚Р°: API РґР»СЏ СЃСѓС‰РЅРѕСЃС‚РµР№ вЂњРџР»Р°С‚РµР¶вЂќ
 */
 
 create or replace package payment_api_pack
 is
-  -- статусы платежа
+  -- СЃС‚Р°С‚СѓСЃС‹ РїР»Р°С‚РµР¶Р°
   c_status_created  constant payment.status%type := 0;
   c_status_finished constant payment.status%type := 1;
   c_status_error    constant payment.status%type := 2;
   c_status_canceled constant payment.status%type := 3;
 
- -- сообщения об ошибках
- c_err_msg_empty_collection  constant varchar2(250 char) := 'Коллекция не содержит данных'; 
- c_err_msg_empty_field_id    constant varchar2(250 char) := 'ID поля не может быть пустым'; 
- c_err_msg_empty_field_value constant varchar2(250 char) := 'Значение в поле не может быть пустым';  
- c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID объекта не может быть пустым';  
- c_err_msg_empty_reason      constant varchar2(250 char) := 'Причина не может быть пустой';
+ -- СЃРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєР°С…
+ c_err_msg_empty_collection  constant varchar2(250 char) := 'РљРѕР»Р»РµРєС†РёСЏ РЅРµ СЃРѕРґРµСЂР¶РёС‚ РґР°РЅРЅС‹С…'; 
+ c_err_msg_empty_field_id    constant varchar2(250 char) := 'ID РїРѕР»СЏ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј'; 
+ c_err_msg_empty_field_value constant varchar2(250 char) := 'Р—РЅР°С‡РµРЅРёРµ РІ РїРѕР»Рµ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј';  
+ c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID РѕР±СЉРµРєС‚Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј';  
+ c_err_msg_empty_reason      constant varchar2(250 char) := 'РџСЂРёС‡РёРЅР° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РїСѓСЃС‚РѕР№';
 
-  -- Создание платежа
+  -- РЎРѕР·РґР°РЅРёРµ РїР»Р°С‚РµР¶Р°
   function create_payment(p_payment_data   t_payment_detail_array,
                           p_summa          payment.summa%type,
                           p_currency_id    payment.currency_id%type,
@@ -27,17 +27,17 @@ is
                           p_payment_date   payment.create_dtime%type
                           ) return payment.payment_id%type;
   
-  -- Сброс платежа в "ошибочный статус" с указанием причины
+  -- РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
   procedure fail_payment(p_payment_id payment.payment_id%type,
                          p_reason     payment.status_change_reason%type
                          );
   
-  -- Отмена платежа с указанием причины
+  -- РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
   procedure cancel_payment(p_payment_id payment.payment_id%type,
                            p_reason     payment.status_change_reason%type
                            );
   
-  -- Успешное завершение платежа
+  -- РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°
   procedure successful_finish_payment(p_payment_id payment.payment_id%type);      
   
 

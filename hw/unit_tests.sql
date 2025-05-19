@@ -1,11 +1,11 @@
 /*
-  автор: Махетова Ольга
-  описание скрипта: unit-тесты для API для сущностей "Платеж" и "Детали платежа"
+  Р°РІС‚РѕСЂ: РњР°С…РµС‚РѕРІР° РћР»СЊРіР°
+  РѕРїРёСЃР°РЅРёРµ СЃРєСЂРёРїС‚Р°: unit-С‚РµСЃС‚С‹ РґР»СЏ API РґР»СЏ СЃСѓС‰РЅРѕСЃС‚РµР№ "РџР»Р°С‚РµР¶" Рё "Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р°"
 */
 
 select * from payment;
 
--- Создание платежа
+-- РЎРѕР·РґР°РЅРёРµ РїР»Р°С‚РµР¶Р°
 declare
   v_payment_data t_payment_detail_array := t_payment_detail_array(t_payment_detail(1, 'CLIENT_SOFTWARE_1'),
                                                                   t_payment_detail(2, 'IP_1'),
@@ -32,10 +32,10 @@ end;
 select * from payment;
 select * from payment_detail;
 
--- Сброс платежа в "ошибочный статус" с указанием причины
+-- РЎР±СЂРѕСЃ РїР»Р°С‚РµР¶Р° РІ "РѕС€РёР±РѕС‡РЅС‹Р№ СЃС‚Р°С‚СѓСЃ" СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
 declare
   v_payment_id payment.payment_id%type := 21;
-  v_reason payment.status_change_reason%type := 'недостаточно средств';
+  v_reason payment.status_change_reason%type := 'РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ';
 begin
   payment_api_pack.fail_payment(p_payment_id => v_payment_id,
                                 p_reason     => v_reason
@@ -46,10 +46,10 @@ end;
 
 select * from payment;
 
--- Отмена платежа с указанием причины
+-- РћС‚РјРµРЅР° РїР»Р°С‚РµР¶Р° СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРёС‡РёРЅС‹
 declare
   v_payment_id payment.payment_id%type := 22;
-  v_reason payment.status_change_reason%type := 'ошибка пользовател¤';
+  v_reason payment.status_change_reason%type := 'РѕС€РёР±РєР° РїРѕР»СЊР·РѕРІР°С‚РµР»В¤';
 begin
   payment_api_pack.cancel_payment(p_payment_id => v_payment_id,
                                   p_reason     => v_reason
@@ -60,7 +60,7 @@ end;
 
 select * from payment;
 
--- Успешное завершение платежа
+-- РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїР»Р°С‚РµР¶Р°
 declare
   v_payment_id payment.payment_id%type := 23;
 begin
@@ -72,7 +72,7 @@ end;
 select * from payment;
 select * from payment_detail;
 
--- Данные платежа добавлены или обновлены
+-- Р”Р°РЅРЅС‹Рµ РїР»Р°С‚РµР¶Р° РґРѕР±Р°РІР»РµРЅС‹ РёР»Рё РѕР±РЅРѕРІР»РµРЅС‹
 declare
   v_payment_id payment.payment_id%type := 21;
   v_payment_data t_payment_detail_array := t_payment_detail_array(t_payment_detail(1, 'CLIENT_SOFTWARE_2'),
@@ -90,7 +90,7 @@ end;
 
 select * from payment_detail;
 
--- Детали платежа удалены
+-- Р”РµС‚Р°Р»Рё РїР»Р°С‚РµР¶Р° СѓРґР°Р»РµРЅС‹
 declare
   v_payment_id payment.payment_id%type := 21;
   v_payment_delete_ids t_number_array := t_number_array(1, 2, 3);
