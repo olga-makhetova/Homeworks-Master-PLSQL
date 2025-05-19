@@ -8,15 +8,15 @@ create or replace function create_payment(p_payment_data   t_payment_detail_arra
                                           p_summa          payment.summa%type,
                                           p_currency_id    payment.currency_id%type,
                                           p_from_client_id payment.from_client_id%type,
-                                          p_to_client_id   payment.to_client_id%type
+                                          p_to_client_id   payment.to_client_id%type,
+                                          p_payment_date   payment.create_dtime%type,
                                           ) return payment.payment_id%type 
 is
   c_status_created constant payment.status%type := 0;
   v_payment_id payment.payment_id%type;
-  v_date date := sysdate;
   v_msg varchar2(250 char) := 'Платеж создан. Статус: ' || c_status_created;
 begin
-  dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd mon year'));
+  dbms_output.put_line('Дата платежа: ' || to_char(p_payment_date, 'dd mon year'));
   
   if p_payment_data is not empty then
     for i in p_payment_data.first..p_payment_data.last loop
@@ -34,7 +34,7 @@ begin
   
   -- добавление платежа
   insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id)
-    values(payment_seq.nextval, systimestamp, p_summa, p_currency_id, p_from_client_id, p_to_client_id)
+    values(payment_seq.nextval, p_payment_date, p_summa, p_currency_id, p_from_client_id, p_to_client_id)
     returning payment_id into v_payment_id;
   
   -- добавление деталей платежа из коллекции
@@ -89,10 +89,10 @@ begin
   dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.FMRM.yyyy'));
   dbms_output.put_line(v_msg);
 
-  dbms_output.put_line('p_payment_id = ' || p_payment_id);
   if p_payment_id is null then
     dbms_output.put_line('ID объекта не может быть пустым');
   end if;
+  dbms_output.put_line('p_payment_id = ' || p_payment_id);
 
     if p_reason is null then
     dbms_output.put_line('Причина не может быть пустой');
