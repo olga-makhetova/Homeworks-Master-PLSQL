@@ -1,11 +1,11 @@
 /*
-  Ğ°Ğ²Ñ‚Ğ¾Ñ€: ĞœĞ°Ñ…ĞµÑ‚Ğ¾Ğ²Ğ° ĞĞ»ÑŒĞ³Ğ°
-  Ğ¾Ğ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ ÑĞºÑ€Ğ¸Ğ¿Ñ‚Ğ°: unit-Ñ‚ĞµÑÑ‚Ñ‹ Ğ´Ğ»Ñ API Ğ´Ğ»Ñ ÑÑƒÑ‰Ğ½Ğ¾ÑÑ‚ĞµĞ¹ "ĞŸĞ»Ğ°Ñ‚ĞµĞ¶" Ğ¸ "Ğ”ĞµÑ‚Ğ°Ğ»Ğ¸ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ°"
+  àâòîğ: Ìàõåòîâà Îëüãà
+  îïèñàíèå ñêğèïòà: unit-òåñòû äëÿ API äëÿ ñóùíîñòåé "Ïëàòåæ" è "Äåòàëè ïëàòåæà"
 */
 
 select * from payment;
 
--- Ğ¡Ğ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ğµ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ°
+-- Ñîçäàíèå ïëàòåæà
 declare
   v_payment_data t_payment_detail_array := t_payment_detail_array(t_payment_detail(1, 'CLIENT_SOFTWARE_1'),
                                                                   t_payment_detail(2, 'IP_1'),
@@ -18,12 +18,13 @@ declare
   v_to_client_id   payment.to_client_id%type := 2;
   v_payment_id     payment.payment_id%type;
 begin
-  v_payment_id := create_payment(v_payment_data, 
-                                 v_summa, 
-                                 v_currency_id,
-                                 v_from_client_id, 
-                                 v_to_client_id
-                                 );
+  v_payment_id := payment_api_pack.create_payment(v_payment_data, 
+                                                  v_summa, 
+                                                  v_currency_id,
+                                                  v_from_client_id, 
+                                                  v_to_client_id,
+                                                  systimestamp
+                                                  );
   commit;
 end;
 /
@@ -31,39 +32,39 @@ end;
 select * from payment;
 select * from payment_detail;
 
--- Ğ¡Ğ±Ñ€Ğ¾Ñ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ° Ğ² "Ğ¾ÑˆĞ¸Ğ±Ğ¾Ñ‡Ğ½Ñ‹Ğ¹ ÑÑ‚Ğ°Ñ‚ÑƒÑ" Ñ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¸ĞµĞ¼ Ğ¿Ñ€Ğ¸Ñ‡Ğ¸Ğ½Ñ‹
+-- Ñáğîñ ïëàòåæà â "îøèáî÷íûé ñòàòóñ" ñ óêàçàíèåì ïğè÷èíû
 declare
-  v_payment_id payment.payment_id%type := 1;
-  v_reason payment.status_change_reason%type := 'Ğ½ĞµĞ´Ğ¾ÑÑ‚Ğ°Ñ‚Ğ¾Ñ‡Ğ½Ğ¾ ÑÑ€ĞµĞ´ÑÑ‚Ğ²';
+  v_payment_id payment.payment_id%type := 21;
+  v_reason payment.status_change_reason%type := 'íåäîñòàòî÷íî ñğåäñòâ';
 begin
-  fail_payment(p_payment_id => v_payment_id,
-               p_reason     => v_reason
-               );
+  payment_api_pack.fail_payment(p_payment_id => v_payment_id,
+                                p_reason     => v_reason
+                                );
   commit;
 end;
 /
 
 select * from payment;
 
--- ĞÑ‚Ğ¼ĞµĞ½Ğ° Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ° Ñ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ¸ĞµĞ¼ Ğ¿Ñ€Ğ¸Ñ‡Ğ¸Ğ½Ñ‹
+-- Îòìåíà ïëàòåæà ñ óêàçàíèåì ïğè÷èíû
 declare
-  v_payment_id payment.payment_id%type := 2;
-  v_reason payment.status_change_reason%type := 'Ğ¾ÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ğ¾Ğ»ÑŒĞ·Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»Â¤';
+  v_payment_id payment.payment_id%type := 22;
+  v_reason payment.status_change_reason%type := 'îøèáêà ïîëüçîâàòåë¤';
 begin
-  cancel_payment(p_payment_id => v_payment_id,
-                 p_reason     => v_reason
-                 );
+  payment_api_pack.cancel_payment(p_payment_id => v_payment_id,
+                                  p_reason     => v_reason
+                                  );
   commit;
 end;
 /
 
 select * from payment;
 
--- Ğ£ÑĞ¿ĞµÑˆĞ½Ğ¾Ğµ Ğ·Ğ°Ğ²ĞµÑ€ÑˆĞµĞ½Ğ¸Ğµ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ°
+-- Óñïåøíîå çàâåğøåíèå ïëàòåæà
 declare
-  v_payment_id payment.payment_id%type := 3;
+  v_payment_id payment.payment_id%type := 23;
 begin
-  successful_finish_payment(p_payment_id => v_payment_id);
+  payment_api_pack.successful_finish_payment(p_payment_id => v_payment_id);
   commit;
 end;
 /
@@ -71,32 +72,32 @@ end;
 select * from payment;
 select * from payment_detail;
 
--- Ğ”Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ° Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ»ĞµĞ½Ñ‹ Ğ¸Ğ»Ğ¸ Ğ¾Ğ±Ğ½Ğ¾Ğ²Ğ»ĞµĞ½Ñ‹
+-- Äàííûå ïëàòåæà äîáàâëåíû èëè îáíîâëåíû
 declare
-  v_payment_id payment.payment_id%type := 1;
+  v_payment_id payment.payment_id%type := 21;
   v_payment_data t_payment_detail_array := t_payment_detail_array(t_payment_detail(1, 'CLIENT_SOFTWARE_2'),
                                                                   t_payment_detail(2, 'IP_2'),
                                                                   t_payment_detail(3, 'NOTE_2'),
                                                                   t_payment_detail(4, 'IS_CHECKED_FRAUD_2')
                                                                  );
 begin
-  insert_or_update_payment_detail(p_payment_id   => v_payment_id,
-                                  p_payment_data => v_payment_data
-                                 ); 
+  payment_detail_api_pack.insert_or_update_payment_detail(p_payment_id   => v_payment_id,
+                                                          p_payment_data => v_payment_data
+                                                          ); 
   commit;
 end;
 /
 
 select * from payment_detail;
 
--- Ğ”ĞµÑ‚Ğ°Ğ»Ğ¸ Ğ¿Ğ»Ğ°Ñ‚ĞµĞ¶Ğ° ÑƒĞ´Ğ°Ğ»ĞµĞ½Ñ‹
+-- Äåòàëè ïëàòåæà óäàëåíû
 declare
-  v_payment_id payment.payment_id%type := 1;
+  v_payment_id payment.payment_id%type := 21;
   v_payment_delete_ids t_number_array := t_number_array(1, 2, 3);
 begin
-  delete_payment_detail(p_payment_id         => v_payment_id,
-                        p_payment_delete_ids => v_payment_delete_ids
-                       );
+  payment_detail_api_pack.delete_payment_detail(p_payment_id         => v_payment_id,
+                                                p_payment_delete_ids => v_payment_delete_ids
+                                                );
   commit;
 end;
 /
