@@ -7,31 +7,31 @@ is
                           p_currency_id    payment.currency_id%type,
                           p_from_client_id payment.from_client_id%type,
                           p_to_client_id   payment.to_client_id%type,
-                          p_payment_date   payment.create_dtime%type
+                          p_create_dtime   payment.create_dtime%type
                           ) return payment.payment_id%type 
   is
     v_payment_id payment.payment_id%type;
     v_msg varchar2(250 char) := 'Платеж создан. Статус: ' || c_status_created;
   begin
-    dbms_output.put_line('Дата платежа: ' || to_char(p_payment_date, 'dd mon year'));
+    dbms_output.put_line('Дата платежа: ' || to_char(p_create_dtime, 'dd mon year'));
     
     if p_payment_data is not empty then
       for i in p_payment_data.first..p_payment_data.last loop
         if p_payment_data(i).field_type is null then
-          dbms_output.put_line(c_err_msg_empty_field_id);
+          raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_field_id);
         end if;
         if p_payment_data(i).field_value is null then
-          dbms_output.put_line(c_err_msg_empty_field_value);
+          raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_field_value);
         end if;
         dbms_output.put_line('field_type = ' || p_payment_data(i).field_type || ', field_value = ' || p_payment_data(i).field_value );
       end loop;
     else
-      dbms_output.put_line(c_err_msg_empty_collection);
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_collection);
     end if;
     
     -- добавление платежа
     insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id)
-      values(payment_seq.nextval, p_payment_date, p_summa, p_currency_id, p_from_client_id, p_to_client_id)
+      values(payment_seq.nextval, p_create_dtime, p_summa, p_currency_id, p_from_client_id, p_to_client_id)
       returning payment_id into v_payment_id;
     
     -- добавление деталей платежа из коллекции
@@ -55,13 +55,13 @@ is
     dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd FMmonth (dy)'));
     dbms_output.put_line(v_msg);
 
-    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     if p_payment_id is null then
-      dbms_output.put_line(c_err_msg_empty_object_id);
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_object_id);
     end if;
+    dbms_output.put_line('p_payment_id = ' || p_payment_id);
 
-      if p_reason is null then
-      dbms_output.put_line(c_err_msg_empty_reason);
+    if p_reason is null then
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_reason);
     end if;
       
     update payment
@@ -86,12 +86,12 @@ is
     dbms_output.put_line(v_msg);
 
     if p_payment_id is null then
-      dbms_output.put_line(c_err_msg_empty_object_id);
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_object_id);
     end if;
     dbms_output.put_line('p_payment_id = ' || p_payment_id);
 
-      if p_reason is null then
-      dbms_output.put_line(c_err_msg_empty_reason);
+    if p_reason is null then
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_reason);
     end if;
       
     update payment
@@ -110,10 +110,10 @@ is
     dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yy hh24:mi:ss'));
     dbms_output.put_line(v_msg);
 
-    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     if p_payment_id is null then
-      dbms_output.put_line(c_err_msg_empty_object_id);
+      raise_application_error(c_error_code_invalid_input_parameter, c_err_msg_empty_object_id);
     end if;
+    dbms_output.put_line('p_payment_id = ' || p_payment_id);
       
     update payment
        set status = c_status_finished,

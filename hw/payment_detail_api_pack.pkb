@@ -10,23 +10,23 @@ as
     dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yyyy hh:mi AM'));
     dbms_output.put_line(v_msg);
 
-    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     if p_payment_id is null then
-      dbms_output.put_line(payment_api_pack.c_err_msg_empty_object_id);
+      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_object_id);
     end if;
+    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     
     if p_payment_data is not empty then
       for i in p_payment_data.first..p_payment_data.last loop
         if p_payment_data(i).field_type is null then
-          dbms_output.put_line(payment_api_pack.c_err_msg_empty_field_id);
+          raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_id);
         end if;
         if p_payment_data(i).field_value is null then
-          dbms_output.put_line(payment_api_pack.c_err_msg_empty_field_value);
+          raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_value);
         end if;
         dbms_output.put_line('field_type = ' || p_payment_data(i).field_type || ', field_value = ' || p_payment_data(i).field_value );
       end loop;
     else
-      dbms_output.put_line(payment_api_pack.c_err_msg_empty_collection);
+      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_collection);
     end if;
     
     merge into payment_detail pd
@@ -50,11 +50,11 @@ as
 
     dbms_output.put_line('p_payment_id = ' || p_payment_id);
     if p_payment_id is null then
-      dbms_output.put_line(payment_api_pack.c_err_msg_empty_field_id);
+      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_id);
     end if;
     
     if p_payment_delete_ids is empty then
-      dbms_output.put_line(payment_api_pack.c_err_msg_empty_collection);
+      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_collection);
     end if;
     dbms_output.put_line('Количество полей для удаления = ' || p_payment_delete_ids.count());
     

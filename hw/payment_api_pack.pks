@@ -11,12 +11,19 @@ is
   c_status_error    constant payment.status%type := 2;
   c_status_canceled constant payment.status%type := 3;
 
- -- сообщения об ошибках
- c_err_msg_empty_collection  constant varchar2(250 char) := 'Коллекция не содержит данных'; 
- c_err_msg_empty_field_id    constant varchar2(250 char) := 'ID поля не может быть пустым'; 
- c_err_msg_empty_field_value constant varchar2(250 char) := 'Значение в поле не может быть пустым';  
- c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID объекта не может быть пустым';  
- c_err_msg_empty_reason      constant varchar2(250 char) := 'Причина не может быть пустой';
+  -- сообщения об ошибках
+  c_err_msg_empty_collection  constant varchar2(250 char) := 'Коллекция не содержит данных'; 
+  c_err_msg_empty_field_id    constant varchar2(250 char) := 'ID поля не может быть пустым'; 
+  c_err_msg_empty_field_value constant varchar2(250 char) := 'Значение в поле не может быть пустым';  
+  c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID объекта не может быть пустым';  
+  c_err_msg_empty_reason      constant varchar2(250 char) := 'Причина не может быть пустой';
+ 
+  -- коды ошибок
+  c_error_code_invalid_input_parameter constant number(10) := -20101;
+  
+  -- объекты исключений
+  e_invalid_input_parameter exception;
+  pragma exception_init (e_invalid_input_parameter, c_error_code_invalid_input_parameter);
 
   -- Создание платежа
   function create_payment(p_payment_data   t_payment_detail_array,
@@ -24,7 +31,7 @@ is
                           p_currency_id    payment.currency_id%type,
                           p_from_client_id payment.from_client_id%type,
                           p_to_client_id   payment.to_client_id%type,
-                          p_payment_date   payment.create_dtime%type
+                          p_create_dtime   payment.create_dtime%type
                           ) return payment.payment_id%type;
   
   -- Сброс платежа в "ошибочный статус" с указанием причины
