@@ -12,5 +12,7 @@ as
   -- Детали платежа удалены
   procedure delete_payment_detail(p_payment_id         payment.payment_id%type,
                                   p_payment_delete_ids t_number_array);                                  
+
+  procedure is_changes_through_api;
 end payment_detail_api_pack;
 /
