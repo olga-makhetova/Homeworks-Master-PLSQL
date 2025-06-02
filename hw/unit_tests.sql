@@ -182,5 +182,6 @@ begin
 exception
   when payment_api_pack.e_invalid_input_parameter then
     dbms_output.put_line('Детали платежа удалены. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+
 end;
 /
