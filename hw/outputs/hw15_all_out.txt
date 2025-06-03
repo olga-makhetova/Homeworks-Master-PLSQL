@@ -1,0 +1,78 @@
+Дата платежа: 02 jun twenty twenty-five
+Текущая дата: 02.06.2025 08:02 PM
+Данные платежа добавлены или обновлены по списку id_поля/значение
+p_payment_id = 62
+field_type = 1, field_value = CLIENT_SOFTWARE_1
+field_type = 2, field_value = IP_1
+field_type = 3, field_value = NOTE_1
+field_type = 4, field_value = IS_CHECKED_FRAUD_1
+Платеж создан. Статус: 0
+v_payment_id = 62
+v_payment_id = 62
+Текущая дата: 02 june (mon)
+Сброс платежа в "ошибочный статус" с указанием причины. Статус: 2. Причина: недостаточно средств
+p_payment_id = 62
+1
+Текущая дата: 02.VI.2025
+Отмена платежа с указанием причины. Статус: 3. Причина: ошибка пользовател§
+p_payment_id = 22
+Текущая дата: 02.06.25 20:03:36
+Успешное завершение платежа. Статус: 1
+p_payment_id = 23
+Текущая дата: 02.06.2025 08:03 PM
+Данные платежа добавлены или обновлены по списку id_поля/значение
+p_payment_id = 21
+field_type = 1, field_value = CLIENT_SOFTWARE_2
+field_type = 2, field_value = IP_2
+field_type = 3, field_value = NOTE_2
+field_type = 4, field_value = IS_CHECKED_FRAUD_2
+Текущая дата: 153's day of year
+Детали платежа удалены по списку id_полей
+p_payment_id = 21
+Количество полей для удаления = 3
+Дата платежа: 02 jun twenty twenty-five
+Текущая дата: 02.06.2025 08:03 PM
+Данные платежа добавлены или обновлены по списку id_поля/значение
+p_payment_id = 63
+Создание платежа. Исключение возбуждено успешно. Ошибка: ORA-20101: Коллекция не содержит данных
+Текущая дата: 02 june (mon)
+Сброс платежа в "ошибочный статус" с указанием причины. Статус: 2. Причина: недостаточно средств
+Сброс платежа в "ошибочный статус" с указанием причины. Исключение возбуждено успешно. Ошибка: ORA-20101: ID объекта не может быть пустым
+Текущая дата: 02.VI.2025
+Отмена платежа с указанием причины. Статус: 3. Причина:
+p_payment_id = 22
+Отмена платежа с указанием причины. Исключение возбуждено успешно. Ошибка: ORA-20101: Причина не может быть пустой
+Текущая дата: 02.06.25 20:04:17
+Успешное завершение платежа. Статус: 1
+Успешное завершение платежа. Исключение возбуждено успешно. Ошибка: ORA-20101: ID объекта не может быть пустым
+Текущая дата: 02.06.2025 08:04 PM
+Данные платежа добавлены или обновлены по списку id_поля/значение
+Данные платежа добавлены или обновлены. Исключение возбуждено успешно. Ошибка: ORA-20101: ID объекта не может быть пустым
+Текущая дата: 153's day of year
+Детали платежа удалены по списку id_полей
+p_payment_id = 21
+Создание платежа. Исключение возбуждено успешно. Ошибка: ORA-20101: Коллекция не содержит данных
+удаление платежа. Исключение возбуждено успешно. Ошибка: ORA-20102: Удаление объекта запрещено!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_B_D_RESTRICT", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_B_D_RESTRICT'
+вставка платежа не через апи. Исключение возбуждено успешно. Ошибка: ORA-20103: Изменения должны выполняться только через API!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_API_PACK", line 149
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_B_IU_API", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_B_IU_API'
+изменение платежа не через апи. Исключение возбуждено успешно. Ошибка: ORA-20103: Изменения должны выполняться только через API!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_API_PACK", line 149
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_B_IU_API", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_B_IU_API'
+удаление деталей платежа. Исключение возбуждено успешно. Ошибка: ORA-20103: Изменения должны выполняться только через API!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_API_PACK", line 98
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API'
+вставка деталей платежа не через апи. Исключение возбуждено успешно. Ошибка: ORA-20103: Изменения должны выполняться только через API!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_API_PACK", line 98
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API'
+изменение деталей платежа не через апи. Исключение возбуждено успешно. Ошибка: ORA-20103: Изменения должны выполняться только через API!
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_API_PACK", line 98
+ORA-06512: at "PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API", line 2
+ORA-04088: error during execution of trigger 'PLSQL14_STUDENT7.PAYMENT_DETAIL_B_IUD_API'
+

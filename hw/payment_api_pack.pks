@@ -17,13 +17,23 @@ is
   c_err_msg_empty_field_value constant varchar2(250 char) := 'Значение в поле не может быть пустым';  
   c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID объекта не может быть пустым';  
   c_err_msg_empty_reason      constant varchar2(250 char) := 'Причина не может быть пустой';
+  c_err_msg_delete_forbidden  constant varchar2(250 char) := 'Удаление объекта запрещено!';
+  c_err_msg_manual_changes    constant varchar2(250 char) := 'Изменения должны выполняться только через API!';
  
   -- коды ошибок
   c_error_code_invalid_input_parameter constant number(10) := -20101;
+  c_error_code_delete_forbidden        constant number(10) := -20102;
+  c_error_code_manual_changes          constant number(10) := -20103;
   
   -- объекты исключений
   e_invalid_input_parameter exception;
   pragma exception_init (e_invalid_input_parameter, c_error_code_invalid_input_parameter);
+  
+  e_delete_forbidden exception;
+  pragma exception_init (e_delete_forbidden, c_error_code_delete_forbidden);
+  
+  e_manual_changes exception;
+  pragma exception_init (e_manual_changes, c_error_code_manual_changes);
 
   -- Создание платежа
   function create_payment(p_payment_data   t_payment_detail_array,
@@ -47,6 +57,7 @@ is
   -- Успешное завершение платежа
   procedure successful_finish_payment(p_payment_id payment.payment_id%type);      
   
+  procedure is_changes_through_api;
 
 end payment_api_pack;
 /

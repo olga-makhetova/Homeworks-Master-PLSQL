@@ -1,5 +1,17 @@
 create or replace package body payment_detail_api_pack
 as
+  g_is_api boolean := false;
+  
+  procedure allow_changes is
+  begin
+    g_is_api := true;
+  end allow_changes;
+  
+  procedure disallow_changes is
+  begin
+    g_is_api := false;
+  end disallow_changes;
+  
   -- Данные платежа добавлены или обновлены
   procedure insert_or_update_payment_detail(p_payment_id   payment.payment_id%type,
                                             p_payment_data t_payment_detail_array)
@@ -7,6 +19,8 @@ as
     v_date date := sysdate;
     v_msg varchar2(250 char) := 'Данные платежа добавлены или обновлены по списку id_поля/значение';
   begin
+    allow_changes();
+    
     dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yyyy hh:mi AM'));
     dbms_output.put_line(v_msg);
 
@@ -35,6 +49,12 @@ as
         update set pd.field_value = v.field_value
       when not matched then 
         insert (payment_id, field_id, field_value) values (p_payment_id, v.field_type, v.field_value);
+       
+    disallow_changes();
+  exception
+    when others then
+      disallow_changes();
+      raise;
   end insert_or_update_payment_detail;
   
 
@@ -45,6 +65,8 @@ as
     v_date date := sysdate;
     v_msg varchar2(250 char) := 'Детали платежа удалены по списку id_полей';
   begin
+    allow_changes();
+    
     dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'DDD') || '''s day of year');
     dbms_output.put_line(v_msg);
 
@@ -62,7 +84,19 @@ as
       delete from payment_detail 
         where payment_id = p_payment_id 
           and field_id = p_payment_delete_ids(i);
+       
+    disallow_changes();
+  exception
+    when others then
+      disallow_changes();
+      raise;
   end delete_payment_detail;
-  
+   
+  procedure is_changes_through_api is
+  begin
+    if not g_is_api then
+      raise_application_error(payment_api_pack.c_error_code_manual_changes, payment_api_pack.c_err_msg_manual_changes);
+    end if;
+  end;
 end payment_detail_api_pack;
 /

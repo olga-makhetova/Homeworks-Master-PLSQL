@@ -15,6 +15,8 @@ declare
   v_from_client_id payment.from_client_id%type := 1;
   v_to_client_id   payment.to_client_id%type := 2;
   v_payment_id     payment.payment_id%type;
+  v_create_dtime_tech payment.create_dtime_tech %type;
+  v_update_dtime_tech payment.update_dtime_tech%type;
 begin
   v_payment_id := payment_api_pack.create_payment(v_payment_data, 
                                                   v_summa, 
@@ -23,17 +25,34 @@ begin
                                                   v_to_client_id,
                                                   systimestamp
                                                   );
+  dbms_output.put_line('v_payment_id = ' || v_payment_id);
+  
+  select create_dtime_tech, update_dtime_tech into v_create_dtime_tech, v_update_dtime_tech  
+    from payment where payment_id = v_payment_id;
+  
+  if v_create_dtime_tech != v_update_dtime_tech then
+    raise_application_error(-20000, 'Технические даты разные!!');
+  end if;
 end;
 /
 
 -- Сброс платежа в "ошибочный статус" с указанием причины
 declare
-  v_payment_id payment.payment_id%type := 21;
+  v_payment_id payment.payment_id%type := 62;
   v_reason payment.status_change_reason%type := 'недостаточно средств';
+  v_create_dtime_tech payment.create_dtime_tech %type;
+  v_update_dtime_tech payment.update_dtime_tech%type;
 begin
   payment_api_pack.fail_payment(p_payment_id => v_payment_id,
                                 p_reason     => v_reason
                                 );
+ 
+  select create_dtime_tech, update_dtime_tech into v_create_dtime_tech, v_update_dtime_tech  
+    from payment where payment_id = v_payment_id;
+  
+  if v_create_dtime_tech = v_update_dtime_tech then
+    raise_application_error(-20000, 'Технические даты одинаковые!!');
+  end if; 
 end;
 /
 
@@ -181,7 +200,85 @@ begin
   raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
 exception
   when payment_api_pack.e_invalid_input_parameter then
-    dbms_output.put_line('Детали платежа удалены. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+    dbms_output.put_line('Создание платежа. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
 
+-- удаление платежа
+declare
+  v_payment_id payment.payment_id%type := 21;
+begin
+  delete from payment where payment_id = v_payment_id;
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_delete_forbidden then
+    dbms_output.put_line('удаление платежа. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
+
+-- вставка платежа не через апи
+declare
+  v_payment_id payment.payment_id%type := 777;
+begin
+ insert into payment(payment_id, create_dtime, summa, currency_id, from_client_id, to_client_id) 
+   values(v_payment_id, systimestamp, 100, 840, 1, 2);
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_manual_changes then
+    dbms_output.put_line('вставка платежа не через апи. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
+
+-- изменение платежа не через апи
+declare
+  v_payment_id payment.payment_id%type := 777;
+begin
+  update payment
+    set summa = 100000
+    where payment_id = v_payment_id;
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_manual_changes then
+    dbms_output.put_line('изменение платежа не через апи. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
+
+-- удаление деталей платежа
+declare
+  v_payment_id payment_detail.payment_id%type := 21;
+begin
+  delete from payment_detail where payment_id = v_payment_id;
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_manual_changes then
+    dbms_output.put_line('удаление деталей платежа. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
+
+-- вставка деталей платежа не через апи
+declare
+  v_payment_id payment.payment_id%type := 777;
+begin
+ insert into payment_detail(payment_id, field_id, field_value) 
+   values(v_payment_id, 1, 'xxx');
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_manual_changes then
+    dbms_output.put_line('вставка деталей платежа не через апи. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
+end;
+/
+
+-- изменение платежа не через апи
+declare
+  v_payment_id payment.payment_id%type := 21;
+begin
+  update payment_detail
+    set field_value = '100000'
+    where payment_id = v_payment_id
+      and field_id = 1;
+  raise_application_error(-20999, 'Unit-тесты или API выполнены неверно!');
+exception
+  when payment_api_pack.e_manual_changes then
+    dbms_output.put_line('изменение деталей платежа не через апи. Исключение возбуждено успешно. Ошибка: ' || sqlerrm);
 end;
 /
