@@ -1,40 +1,10 @@
 /*
   Автор: Махетова Ольга
-  Описание пакета: API для сущностей “Платеж”
+  описание пакета: API для сущностей "платеж"
 */
 
 create or replace package payment_api_pack
 is
-  -- статусы платежа
-  c_status_created  constant payment.status%type := 0;
-  c_status_finished constant payment.status%type := 1;
-  c_status_error    constant payment.status%type := 2;
-  c_status_canceled constant payment.status%type := 3;
-
-  -- сообщения об ошибках
-  c_err_msg_empty_collection  constant varchar2(250 char) := 'Коллекция не содержит данных'; 
-  c_err_msg_empty_field_id    constant varchar2(250 char) := 'ID поля не может быть пустым'; 
-  c_err_msg_empty_field_value constant varchar2(250 char) := 'Значение в поле не может быть пустым';  
-  c_err_msg_empty_object_id   constant varchar2(250 char) := 'ID объекта не может быть пустым';  
-  c_err_msg_empty_reason      constant varchar2(250 char) := 'Причина не может быть пустой';
-  c_err_msg_delete_forbidden  constant varchar2(250 char) := 'Удаление объекта запрещено!';
-  c_err_msg_manual_changes    constant varchar2(250 char) := 'Изменения должны выполняться только через API!';
- 
-  -- коды ошибок
-  c_error_code_invalid_input_parameter constant number(10) := -20101;
-  c_error_code_delete_forbidden        constant number(10) := -20102;
-  c_error_code_manual_changes          constant number(10) := -20103;
-  
-  -- объекты исключений
-  e_invalid_input_parameter exception;
-  pragma exception_init (e_invalid_input_parameter, c_error_code_invalid_input_parameter);
-  
-  e_delete_forbidden exception;
-  pragma exception_init (e_delete_forbidden, c_error_code_delete_forbidden);
-  
-  e_manual_changes exception;
-  pragma exception_init (e_manual_changes, c_error_code_manual_changes);
-
   -- Создание платежа
   function create_payment(p_payment_data   t_payment_detail_array,
                           p_summa          payment.summa%type,
@@ -57,7 +27,10 @@ is
   -- Успешное завершение платежа
   procedure successful_finish_payment(p_payment_id payment.payment_id%type);      
   
+  -- для триггеров
   procedure is_changes_through_api;
+  
+  procedure check_payment_delete_restriction;
 
 end payment_api_pack;
 /

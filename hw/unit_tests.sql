@@ -38,7 +38,7 @@ end;
 
 -- Сброс платежа в "ошибочный статус" с указанием причины
 declare
-  v_payment_id payment.payment_id%type := 62;
+  v_payment_id payment.payment_id%type := 42;
   v_reason payment.status_change_reason%type := 'недостаточно средств';
   v_create_dtime_tech payment.create_dtime_tech %type;
   v_update_dtime_tech payment.update_dtime_tech%type;
@@ -98,6 +98,55 @@ begin
   payment_detail_api_pack.delete_payment_detail(p_payment_id         => v_payment_id,
                                                 p_payment_delete_ids => v_payment_delete_ids
                                                 );
+end;
+/
+
+
+/*******************************************************************************
+**          Проверка функционала по глобальному отключению проверок           **
+*******************************************************************************/
+-- удаление
+declare 
+  v_payment_id payment.payment_id%type := 21;
+begin
+  common_pack.enable_manual_changes;
+  
+  delete from payment where payment_id = v_payment_id;
+  
+  common_pack.disable_manual_changes;
+exception
+  when others then
+    common_pack.disable_manual_changes;
+end;
+/
+
+-- изменение платежа
+declare 
+  v_payment_id payment.payment_id%type := 22;
+begin
+  common_pack.enable_manual_changes;
+  
+  update payment set summa = summa + 100000 where payment_id = v_payment_id;
+  
+  common_pack.disable_manual_changes;
+exception
+  when others then
+    common_pack.disable_manual_changes;
+end;
+/
+
+-- изменение деталей платежа
+declare 
+  v_payment_id payment.payment_id%type := 22;
+begin
+  common_pack.enable_manual_changes;
+  
+  update payment_detail set field_value = '' where payment_id = v_payment_id and field_id = 1;
+  
+  common_pack.disable_manual_changes;
+exception
+  when others then
+    common_pack.disable_manual_changes;
 end;
 /
 
