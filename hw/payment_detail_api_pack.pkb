@@ -12,35 +12,28 @@ as
     g_is_api := false;
   end disallow_changes;
   
-  -- Данные платежа добавлены или обновлены
+  -- ƒанные платежа добавлены или обновлены
   procedure insert_or_update_payment_detail(p_payment_id   payment.payment_id%type,
                                             p_payment_data t_payment_detail_array)
   is
-    v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Данные платежа добавлены или обновлены по списку id_поля/значение';
   begin
     allow_changes();
     
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'dd.mm.yyyy hh:mi AM'));
-    dbms_output.put_line(v_msg);
-
     if p_payment_id is null then
-      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_object_id);
+      raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_object_id);
     end if;
-    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     
     if p_payment_data is not empty then
       for i in p_payment_data.first..p_payment_data.last loop
         if p_payment_data(i).field_type is null then
-          raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_id);
+          raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_field_id);
         end if;
         if p_payment_data(i).field_value is null then
-          raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_value);
+          raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_field_value);
         end if;
-        dbms_output.put_line('field_type = ' || p_payment_data(i).field_type || ', field_value = ' || p_payment_data(i).field_value );
       end loop;
     else
-      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_collection);
+      raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_collection);
     end if;
     
     merge into payment_detail pd
@@ -58,27 +51,20 @@ as
   end insert_or_update_payment_detail;
   
 
-  -- Детали платежа удалены
+  -- ƒетали платежа удалены
   procedure delete_payment_detail(p_payment_id         payment.payment_id%type,
                                   p_payment_delete_ids t_number_array)
   is
-    v_date date := sysdate;
-    v_msg varchar2(250 char) := 'Детали платежа удалены по списку id_полей';
   begin
     allow_changes();
     
-    dbms_output.put_line('Текущая дата: ' || to_char(v_date, 'DDD') || '''s day of year');
-    dbms_output.put_line(v_msg);
-
-    dbms_output.put_line('p_payment_id = ' || p_payment_id);
     if p_payment_id is null then
-      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_field_id);
+      raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_field_id);
     end if;
     
     if p_payment_delete_ids is empty then
-      raise_application_error(payment_api_pack.c_error_code_invalid_input_parameter, payment_api_pack.c_err_msg_empty_collection);
+      raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_collection);
     end if;
-    dbms_output.put_line('Количество полей для удаления = ' || p_payment_delete_ids.count());
     
     forall i in p_payment_delete_ids.first..p_payment_delete_ids.last
       delete from payment_detail 
@@ -92,10 +78,11 @@ as
       raise;
   end delete_payment_detail;
    
+  -- проверка, провод¤тс¤ ли изменени¤ через API
   procedure is_changes_through_api is
   begin
-    if not g_is_api then
-      raise_application_error(payment_api_pack.c_error_code_manual_changes, payment_api_pack.c_err_msg_manual_changes);
+    if not g_is_api and not common_pack.is_manual_changes_allowed then
+      raise_application_error(common_pack.c_error_code_manual_changes, common_pack.c_err_msg_manual_changes);
     end if;
   end;
 end payment_detail_api_pack;
