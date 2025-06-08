@@ -12,11 +12,12 @@ as
     g_is_api := false;
   end disallow_changes;
   
-  -- ƒанные платежа добавлены или обновлены
+  -- Данные платежа добавлены или обновлены
   procedure insert_or_update_payment_detail(p_payment_id   payment.payment_id%type,
                                             p_payment_data t_payment_detail_array)
   is
   begin
+    payment_api_pack.try_lock_payment(p_payment_id);
     allow_changes();
     
     if p_payment_id is null then
@@ -51,13 +52,11 @@ as
   end insert_or_update_payment_detail;
   
 
-  -- ƒетали платежа удалены
+  -- Детали платежа удалены
   procedure delete_payment_detail(p_payment_id         payment.payment_id%type,
                                   p_payment_delete_ids t_number_array)
   is
   begin
-    allow_changes();
-    
     if p_payment_id is null then
       raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_field_id);
     end if;
@@ -65,6 +64,9 @@ as
     if p_payment_delete_ids is empty then
       raise_application_error(common_pack.c_error_code_invalid_input_parameter, common_pack.c_err_msg_empty_collection);
     end if;
+    
+    payment_api_pack.try_lock_payment(p_payment_id);
+    allow_changes();
     
     forall i in p_payment_delete_ids.first..p_payment_delete_ids.last
       delete from payment_detail 
@@ -78,7 +80,7 @@ as
       raise;
   end delete_payment_detail;
    
-  -- проверка, провод¤тс¤ ли изменени¤ через API
+  -- проверка, проводятся ли изменени¤ через API
   procedure is_changes_through_api is
   begin
     if not g_is_api and not common_pack.is_manual_changes_allowed then

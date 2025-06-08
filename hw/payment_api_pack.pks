@@ -25,7 +25,10 @@ is
                            );
   
   -- Успешное завершение платежа
-  procedure successful_finish_payment(p_payment_id payment.payment_id%type);      
+  procedure successful_finish_payment(p_payment_id payment.payment_id%type);    
+  
+  -- запрос на блокировку
+  procedure try_lock_payment(p_payment_id payment.payment_id%type);  
   
   -- для триггеров
   procedure is_changes_through_api;
