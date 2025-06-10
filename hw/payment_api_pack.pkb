@@ -12,7 +12,28 @@ is
     g_is_api := false;
   end disallow_changes;
 
-  -- —оздание платежа
+  -- запрос на блокировку
+  procedure try_lock_payment(p_payment_id payment.payment_id%type)
+  is
+    v_status payment.status%type;
+  begin
+    select status into v_status 
+      from payment 
+     where payment_id = p_payment_id 
+       for update nowait;
+       
+     if v_status <> common_pack.c_status_created then
+       raise_application_error(common_pack.c_error_code_final_status, common_pack.c_err_msg_final_status);
+     end if;
+     
+  exception
+    when no_data_found then
+       raise_application_error(common_pack.c_error_code_object_notfound, common_pack.c_err_msg_object_notfound);
+    when common_pack.e_row_locked then
+       raise_application_error(common_pack.c_error_code_object_already_locked, common_pack.c_err_msg_object_already_locked);
+  end try_lock_payment;
+
+  -- Создание платежа
   function create_payment(p_payment_data   t_payment_detail_array,
                           p_summa          payment.summa%type,
                           p_currency_id    payment.currency_id%type,
@@ -41,12 +62,13 @@ is
       raise;
   end create_payment;
 
-  -- —брос платежа в "ошибочный статус" с указанием причины
+  -- Сброс платежа в "ошибочный статус" с указанием причины
   procedure fail_payment(p_payment_id payment.payment_id%type,
                          p_reason     payment.status_change_reason%type
                          )
   is
   begin
+    try_lock_payment(p_payment_id);
     allow_changes();
 
     if p_payment_id is null then
@@ -71,12 +93,13 @@ is
   end fail_payment;
 
 
-  -- ќтмена платежа с указанием причины
+  -- Отмена платежа с указанием причины
   procedure cancel_payment(p_payment_id payment.payment_id%type,
                            p_reason     payment.status_change_reason%type
                            )
   is
   begin
+    try_lock_payment(p_payment_id);
     allow_changes();
 
     if p_payment_id is null then
@@ -99,10 +122,11 @@ is
       raise;
   end cancel_payment;
 
-  -- ”спешное завершение платежа
+  -- Успешное завершение платежа
   procedure successful_finish_payment(p_payment_id payment.payment_id%type)
   is
   begin
+    try_lock_payment(p_payment_id);
     allow_changes();
 
     if p_payment_id is null then
@@ -122,7 +146,7 @@ is
       raise;
   end successful_finish_payment;
   
-  -- проверка, провод¤тс¤ ли изменени¤ через API
+  -- проверка, проводятся ли изменения через API
   procedure is_changes_through_api is
   begin
     if not g_is_api and not common_pack.is_manual_changes_allowed then
@@ -130,7 +154,7 @@ is
     end if;
   end;
   
-  -- возможность удалени¤ данных
+  -- возможность удаления данных
   procedure check_payment_delete_restriction
   is
   begin
